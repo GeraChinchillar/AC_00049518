@@ -20,7 +20,7 @@
         ; Direccionamiento indirecto base + indice
         mov BX, 200h
         mov SI, 0002h
-        mov DL, [BX + DI]
+        mov DL, [BX + SI]
 
         ; Direccionamiento relativo por registro
         mov DI, [BX + 003h]
