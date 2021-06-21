@@ -1,53 +1,41 @@
 org 100h
         section .text
         XOR AX, AX
-        XOR SI,SI
         XOR BX,BX
         XOR CX,CX
         XOR DX,DX
+        XOR SI,SI
 
         MOV SI, 0
         MOV DI, 0d
-        
         MOV DH, 10
-        MOV DL, 20
+        MOV DL, 25
 
-        call modotexto
+        modotexto:
+            MOV AH,0h
+            MOV AL,03h
+            int 10h
         
         loop1:
-                call cursor
-                MOV cl, [cadena1+SI]
-                call character
-                INC SI
-                INC DI
-                INC DL
-                cmp DI, len1
-                jb loop1
-                XOR AH,AH
-                XOR CX,CX
-                XOR AL, AL
-                XOR DI,DI
-                XOR DL, DL
-                XOR SI, SI
-                MOV DL,20
-                INC DH
-                jmp loop2
+            call cursor
+            MOV cl, [cadena1+SI]
+            call character
+            call increase
+            cmp DI, len1
+            jb loop1
+            call clear
+            MOV DL,25
+            INC DH
+            jmp loop2
         loop2:
                 call cursor
                 MOV cl, [cadena2+SI]
                 call character
-                INC SI
-                INC DI
-                INC DL
+                call increase
                 cmp DI, len2
                 jb loop2
-                XOR AH,AH
-                XOR CX,CX
-                XOR AL, AL
-                XOR DI,DI
-                XOR DL, DL
-                XOR SI, SI
-                MOV DL,20
+                call clear
+                MOV DL,25
                 INC DH
                 jmp loop3
 
@@ -55,18 +43,11 @@ org 100h
                 call cursor
                 MOV cl, [cadena3+SI]
                 call character
-                INC SI
-                INC DI
-                INC DL
+                call increase
                 cmp DI, len3
                 jb loop3
-                XOR AH,AH
-                XOR CX,CX
-                XOR AL, AL
-                XOR DI,DI
-                XOR DL, DL
-                XOR SI, SI
-                MOV DL,20
+                call clear
+                MOV DL,25
                 INC DH
                 jmp loop4
 
@@ -74,32 +55,34 @@ org 100h
                 call cursor
                 MOV cl, [cadena4+SI]
                 call character
-                INC SI
-                INC DI
-                INC DL
+                call increase
                 cmp DI, len4
                 jb loop4
-                XOR AH,AH
-                XOR CX,CX
-                XOR AL, AL
-                XOR DI,DI
-                XOR SI, SI
-                XOR DL, DL
-                MOV DL,20
+                call clear
+                MOV DL,25
                 INC DH
                 jmp waitkey
+
+        clear: 
+            XOR AX,AX
+            XOR CX,CX
+            XOR DI,DI
+            XOR DL, DL
+            XOR SI, SI
+            ret
+
+        increase:
+            INC SI
+            INC DI
+            INC DL
+            ret
 
         cursor:
                 MOV AH,02H
                 MOV bh,0h
                 int 10H
                 ret
-        
-        modotexto:
-                MOV AH,0h
-                MOV AL,03h
-                int 10h
-                ret
+
 
         character:
                 MOV AH,0AH
