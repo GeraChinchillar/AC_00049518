@@ -1,6 +1,9 @@
 ;CHRISTIAN GERARDO CHINCHILLA RAMIREZ
 ;00049518
 
+;Usuario cualquiera
+;Contraseña: a1234a
+
 	org 	100h
 
 	section	.text
@@ -21,19 +24,30 @@
         mov 	BP, frase2
         call  	LeerCadena
 
-        ; print frase3
-        mov 	DX, frase3
-        call 	EscribirCadena
-
-        call	EsperarTecla
-
-        int 	20h
+        xor si, si
+        call    verificar
 
     ; FUNCIONES
-    EsperarTecla:
-            mov     AH, 01h         
-            int     21h
-            ret
+
+    verificar:
+        mov bh, frase4[si]
+        mov bl, frase2[si]
+        cmp bh, bl
+        jz correcto
+        cmp bh, '$'
+        jnz incorrecto
+        inc si
+        jmp verificar
+
+    correcto:
+        mov 	DX, strcorrecto
+        call 	EscribirCadena
+        jmp Fin
+
+    incorrecto:
+        mov 	DX, strincorrecto
+        call 	EscribirCadena
+        jmp Fin
 
     LeerCadena:
             xor     SI, SI          
@@ -48,15 +62,25 @@
         mov 	byte [BP+SI], "$"	
             ret
 
+    EsperarTecla:
+        mov     AH, 01h         
+        int     21h
+        ret
+
     EscribirCadena:
         mov 	AH, 09h
         int 	21h
         ret
 
+    Fin:
+        int 	20h
+
     section	.data
 
         str1	db	"Escriba su usuario: ", "$"
-        str2 	db 	"Ingrese su contraseña: ", "$"
-        frase1 	times 	20  	db	" " 	
-        frase2 	times 	20  	db	" " 
-        frase3 	db "CORRECTO", "$"
+        str2 	db 	"Ingrese su contrasenia: ", "$"
+        frase1 	times 	20  	db	"$" 	
+        frase2 	times 	20  	db	"$" 
+        frase4  db  "a1234a"
+        strcorrecto 	db "CORRECTO", "$"
+        strincorrecto 	db "INCORRECTO", "$"
